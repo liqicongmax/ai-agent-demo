@@ -3,20 +3,24 @@ from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
 import tools
 import os
+from dotenv import load_dotenv
 
 def main():
     """
     主函数：通过pydantic-ai接入OpenAI实现AI Agent
     """
-    # 配置OpenAI API
-    # 注意：实际使用时请替换为真实的API密钥
-    openai_api_key = 'zzzzzz'
+    # 加载.env文件
+    load_dotenv()
     
-    # 手动配置OpenAI的URL（可选，如果不设置则使用默认的OpenAI URL）
-    openai_base_url = 'https://ark.cn-beijing.volces.com/api/coding/v3'
+    # 从环境变量获取OpenAI API配置
+    openai_api_key = os.getenv('OPENAI_API_KEY')
+    openai_base_url = os.getenv('OPENAI_BASE_URL')
     
-    # 设置环境变量，确保OpenAIProvider能够找到API密钥
-    os.environ['OPENAI_API_KEY'] = openai_api_key
+    # 验证配置
+    if not openai_api_key:
+        raise ValueError("OPENAI_API_KEY未设置，请在.env文件中配置")
+    if not openai_base_url:
+        raise ValueError("OPENAI_BASE_URL未设置，请在.env文件中配置")
     
     # 创建OpenAI Provider
     openai_provider = OpenAIProvider(
@@ -33,11 +37,12 @@ def main():
     # 创建Agent实例，使用自定义的模型
     agent = Agent(
         model=model,
+        system_prompt='你是一个智能助手，你可以执行以下任务：\n1. 列出当前目录下的所有文件\n2. 读取文件内容\n3. 重命名文件\n',
         tools=[tools.list_files, tools.read_file, tools.rename_file]
     )
     
     # 测试对话
-    print("AI助手已启动，输入'退出'结束对话")
+    print("AI助手已启动,输入'退出'结束对话")
     while True:
         user_input = input("用户: ")
         if user_input == '退出':
