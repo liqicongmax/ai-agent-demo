@@ -37,7 +37,7 @@ def main():
     # 创建Agent实例，使用自定义的模型
     agent = Agent(
         model=model,
-        system_prompt='你是一个智能助手，你可以执行以下任务：\n1. 列出当前目录下的所有文件\n2. 读取文件内容\n3. 重命名文件\n',
+        system_prompt='你是一个智能助手，你可以执行以下任务：\n11. 列出当前目录下的所有文件\n2. 读取文件内容\n3. 重命名文件\n',
         tools=[tools.list_files, tools.read_file, tools.rename_file]
     )
     
